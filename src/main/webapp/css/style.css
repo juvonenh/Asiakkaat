@@ -1,0 +1,16 @@
+table, th, td {
+	border: 1px solid;
+	padding: 15px;
+}
+
+table {
+  width: 50%;
+}
+
+th {
+	background-color: lightblue;
+}
+
+tr:hover {
+	background-color: lightgray;
+}
