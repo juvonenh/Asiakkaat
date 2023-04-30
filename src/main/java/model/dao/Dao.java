@@ -19,9 +19,9 @@ public class Dao {
 	private Connection yhdista() {
 		Connection con = null;
 		String path = System.getProperty("catalina.base");
-		path = path.substring(0, path.indexOf(".metadata")).replace("\\", "/"); //Eclipsessa
-		//System.out.println(path); //Tästä näet mihin kansioon laitat tietokanta-tiedostosi
-		//path += "/webapps/"; //Tuotannossa. Laita tietokanta webapps-kansioon
+		path = path.substring(0, path.indexOf(".metadata")).replace("\\", "/"); // Eclipsessa
+		//System.out.println(path); // Tästä näet mihin kansioon laitat tietokanta-tiedostosi
+		//path += "/webapps/"; // Tuotannossa. Laita tietokanta webapps-kansioon
 		String url = "jdbc:sqlite:" + path + db;
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -87,18 +87,19 @@ public class Dao {
 		return asiakkaat;
 	}
 	
-	public ArrayList<Asiakas> getAllItems(String searchStr) { //Metodeja voi kuormittaa kunhan erovat toisistaan parametreiltaan
+	public ArrayList<Asiakas> getAllItems(String searchStr) { // Metodeja voi kuormittaa kunhan erovat toisistaan parametreiltaan
 		ArrayList<Asiakas> asiakkaat = new ArrayList<Asiakas>();
-		sql = "SELECT * FROM asiakkaat WHERE etunimi LIKE ? or sukunimi LIKE ? or sposti LIKE ? ORDER BY asiakas_id";
+		sql = "SELECT * FROM asiakkaat WHERE etunimi LIKE ? or sukunimi LIKE ? or puhelin LIKE ? or sposti LIKE ? ORDER BY asiakas_id";
 		try {
 			con = yhdista();
-			if (con != null) { // jos yhteys onnistui
+			if (con != null) { // Jos yhteys onnistui
 				stmtPrep = con.prepareStatement(sql);
 				stmtPrep.setString(1, "%" + searchStr + "%");
 				stmtPrep.setString(2, "%" + searchStr + "%");
 				stmtPrep.setString(3, "%" + searchStr + "%");
+				stmtPrep.setString(4, "%" + searchStr + "%");
 				rs = stmtPrep.executeQuery();
-				if (rs != null) { // jos kysely onnistui
+				if (rs != null) { // Jos kysely onnistui
 					while (rs.next()) {
 						Asiakas asiakas = new Asiakas();
 						asiakas.setAsiakas_id(rs.getInt(1));
@@ -116,5 +117,42 @@ public class Dao {
 			sulje();
 		}
 		return asiakkaat;
+	}
+	
+	public boolean addItem(Asiakas asiakas) {
+		boolean paluuArvo = true;
+		sql = "INSERT INTO asiakkaat(etunimi, sukunimi, puhelin, sposti)VALUES(?,?,?,?)";
+		try {
+			con = yhdista();
+			stmtPrep = con.prepareStatement(sql); // Auttaa suojaamaan SQL-injektioilta
+			stmtPrep.setString(1, asiakas.getEtunimi());
+			stmtPrep.setString(2, asiakas.getSukunimi());
+			stmtPrep.setString(3, asiakas.getPuhelin());
+			stmtPrep.setString(4, asiakas.getSposti());
+			stmtPrep.executeUpdate();		
+		} catch (Exception e) {
+			paluuArvo=false;
+			e.printStackTrace();
+		} finally {
+			sulje();
+		}
+		return paluuArvo;
+	}
+	
+	public boolean removeItem(int id) { // Oikeassa elämässä tiedot ensisijaisesti merkitään poistetuksi
+		boolean paluuArvo = true;
+		sql = "DELETE FROM asiakkaat WHERE asiakas_id=?";
+		try {
+			con = yhdista();
+			stmtPrep = con.prepareStatement(sql);
+			stmtPrep.setInt(1, id);
+			stmtPrep.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+			paluuArvo = false;
+		} finally {
+			sulje();
+		}
+		return paluuArvo;
 	}
 }
