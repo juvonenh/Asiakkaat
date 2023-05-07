@@ -38,7 +38,7 @@ table th {
 }
 
 #linkki{
-	color: black;	
-	text-decoration: none;
+	color: green;	
+	text-decoration: underline;
 }
 

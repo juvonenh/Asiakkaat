@@ -4,11 +4,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<script src="scripts/script.js"></script>
+<script src="scripts/main.js"></script>
+<script src="scripts/io.js"></script>
 <link rel="stylesheet" type="text/css" href="css/tyyli.css">
 <title>Asiakastiedot</title>
 </head>
-<body>
+<body onload="asetaFocus('hakusana')" onkeydown="tutkiKey(event, 'listaa')">
 	<table id="listaus">
 		<thead>
 			<tr>
