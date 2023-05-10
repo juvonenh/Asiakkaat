@@ -3,7 +3,7 @@ function haeAsiakkaat() {
 	let url = "asiakkaat?hakusana=" + document.getElementById("hakusana").value;
 	let requestOptions = {
 		method: "GET",
-		headers: { "Content-Type": "application/x-www-form-urlencoded" }       
+		headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }       
 	};    
 	fetch(url, requestOptions)
 	.then(response => response.json()) //Muutetaan vastausteksti JSON-objektiksi 
@@ -21,7 +21,7 @@ function printItems(respObjList){
     	htmlStr+="<td>"+item.sukunimi+"</td>";
     	htmlStr+="<td>"+item.puhelin+"</td>";
     	htmlStr+="<td>"+item.sposti+"</td>";
-    	htmlStr+="<td><a href='muutaasiakas.jsp?asiakas_id="+item.asiakas_id+"'>Muuta</a>&nbsp;&nbsp;&nbsp;";
+    	htmlStr+="<td><a href='muutaasiakas.jsp?id="+item.asiakas_id+"'>Muuta</a>&nbsp;&nbsp;&nbsp;";
     	//encodeURI() muutetaan erikoismerkit, välilyönnit jne. UTF-8 merkeiksi	
     	htmlStr+="<span class='poista' onclick=varmistaPoisto("+item.asiakas_id+",'"+encodeURI(item.etunimi+" "+item.sukunimi)+"')>Poista</span></td>";
     	htmlStr+="</tr>";    	
@@ -79,11 +79,11 @@ function poistaAsiakas(asiakas_id, nimi){
 //Haetaan muutettavan asiakkaan tiedot. Kutsutaan backin GET-metodia ja välitetään kutsun mukana muutettavan tiedon id
 function haeAsiakas() {
 	//requestURLParam() on funktio, jolla voidaan hakea urlista arvo avaimen perusteella. Löytyy main.js -tiedostosta.
-    let url = "asiakkaat?asiakas_id=" + requestURLParam("asiakas_id");  	
+    let url = "asiakkaat?asiakas_id=" + requestURLParam("id");  	
 	//console.log(url);
     let requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }       
+        headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }       
     };    
     fetch(url, requestOptions)
     .then(response => response.json()) //Muutetaan vastausteksti JSON-objektiksi
@@ -113,9 +113,9 @@ function paivitaTiedot(){
    	.then(responseObj => {	
    		//console.log(responseObj);
    		if(responseObj.response==0){
-   			document.getElementById("ilmo").innerHTML = "Asiakkaan muutos epäonnistui.";	
+   			document.getElementById("ilmo").innerHTML = "Asiakkaan tietojen päivitys epäonnistui.";	
         }else if(responseObj.response==1){ 
-        	document.getElementById("ilmo").innerHTML = "Asiakkaan muutos onnistui.";
+        	document.getElementById("ilmo").innerHTML = "Asiakkaan tietojen päivitys onnistui.";
 			document.lomake.reset(); //Tyhjennetään asiakkaan muuttamisen lomake		        	
 		}
    	})

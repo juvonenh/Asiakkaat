@@ -159,14 +159,14 @@ public class Dao {
 		return paluuArvo;
 	}
 
-	public Asiakas getItem(int asiakas_id) {
+	public Asiakas getItem(int id) {
 		Asiakas asiakas = null;
 		sql = "SELECT * FROM asiakkaat WHERE asiakas_id=?";
 		try {
 			con = yhdista();
 			if (con != null) {
 				stmtPrep = con.prepareStatement(sql);
-				stmtPrep.setInt(1, asiakas_id);
+				stmtPrep.setInt(1, id);
 				rs = stmtPrep.executeQuery();
 				if (rs.isBeforeFirst()) { // Jos kysely tuotti dataa
 					rs.next();
@@ -205,5 +205,28 @@ public class Dao {
 			sulje();
 		}
 		return paluuArvo;
+	}
+
+	public String findUser(String uid, String pwd) {
+		String nimi = null;
+		sql = "SELECT * FROM asiakkaat WHERE sposti=? AND salasana=?";
+		try {
+			con = yhdista();
+			if (con != null) {
+				stmtPrep = con.prepareStatement(sql);
+				stmtPrep.setString(1, uid);
+				stmtPrep.setString(2, pwd);
+				rs = stmtPrep.executeQuery();
+				if (rs.isBeforeFirst()) { // Jos kysely tuotti dataa, eli asiakas löytyi
+					rs.next();
+					nimi = rs.getString("etunimi") + " " + rs.getString("sukunimi");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sulje();
+		}
+		return nimi;
 	}
 }
